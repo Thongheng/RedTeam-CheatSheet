@@ -32,29 +32,15 @@ Link : https://thongheng.github.io/RedToy/
 
 ## 🤖 AI Assistant Configuration
 
-The "RedTeam AI" assistant is enabled by default. It uses the Google Gemini API.
+The "RedTeam AI" assistant is disable by default. It uses the Google Gemini API.
 
 ### To Disable AI Features:
 1.  Open `constants.ts`.
-2.  Change `ENABLE_AI` to `false`:
+2.  Change `ENABLE_AI` to `true`:
     ```typescript
-    export const ENABLE_AI = false; 
+    export const ENABLE_AI = true; 
     ```
     This will remove the AI button from the header and prevent any API calls.
-
-## 📱 PWA Setup (Desktop App)
-
-This app is configured as a PWA. To make it look professional when installed:
-
-1.  Create a `public` folder in the root directory.
-2.  Add your icons to `public/`:
-    *   `pwa-192x192.png` (192x192 px)
-    *   `pwa-512x512.png` (512x512 px)
-    *   `apple-touch-icon.png` (180x180 px)
-    *   `favicon.ico`
-3.  Rebuild the app: `npm run build`
-
-Once deployed, users will see an "Install" icon in their browser address bar (Chrome/Edge), allowing them to install it as a standalone desktop application.
 
 ## 🌐 Hosting on GitHub Pages
 
