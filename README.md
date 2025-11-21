@@ -1,7 +1,6 @@
-
 # RedToy Cheatsheet
 
-A playful yet powerful Red Team cheatsheet with a Neubrutalist design, powered by Gemini AI. Now available as a Progressive Web App (PWA).
+A playful yet powerful Red Team cheatsheet. It is powered by Google's Gemini AI to assist with command generation and explanations.
 
 Link : https://thongheng.github.io/RedToy/
 
@@ -10,7 +9,7 @@ Link : https://thongheng.github.io/RedToy/
 1.  **Clone the repository**
     ```bash
     git clone <your-repo-url>
-    cd <your-repo-name>
+    cd RedToy
     ```
 
 2.  **Install Dependencies**
@@ -19,6 +18,7 @@ Link : https://thongheng.github.io/RedToy/
     ```
 
 3.  **Set Environment Variable**
+    To use the AI features, you need a Google Gemini API key.
     Create a `.env` file in the root directory:
     ```
     API_KEY=your_google_gemini_api_key_here
@@ -30,95 +30,81 @@ Link : https://thongheng.github.io/RedToy/
     ```
     Open the link shown in the terminal (usually `http://localhost:5173`).
 
-## 🤖 AI Assistant Configuration
+## 🤖 AI Assistance
 
-The "RedTeam AI" assistant is disable by default. It uses the Google Gemini API.
+RedToy includes an AI assistant powered by Google Gemini. It can help explain tools, generate complex commands, and provide Red Teaming tips.
 
-### To Disable AI Features:
-1.  Open `constants.ts`.
-2.  Change `ENABLE_AI` to `true`:
+Note : AI features are disabled by default.
+
+### Configuration
+The AI features are controlled by the `ENABLE_AI` constant in `constants.ts`.
+
+-   **To Enable/Disable:**
+    Open `constants.ts` and set `ENABLE_AI` to `true` or `false`.
     ```typescript
-    export const ENABLE_AI = true; 
+    export const ENABLE_AI = true; // Set to false to disable
     ```
-    This will remove the AI button from the header and prevent any API calls.
 
-## 🌐 Hosting on GitHub Pages
+-   **Requirements:**
+    You must have a valid API key in your `.env` file as described in the setup steps.
 
-This project is configured to deploy automatically via GitHub Actions using your secure API Key.
+## 🛠 Adding Your Own Data
 
-1.  Go to your GitHub repository **Settings**.
-2.  Navigate to **Secrets and variables** > **Actions**.
-3.  Click **New repository secret**.
-4.  Name: `API_KEY`
-5.  Value: Your Google Gemini API Key.
-6.  Navigate to **Pages** (in the left sidebar).
-7.  Under **Build and deployment**, ensure Source is set to **GitHub Actions**.
-8.  Push your code to the `main` branch. The Action will trigger and deploy your site with the API key safely embedded.
+The application is designed to be easily extensible. All data is located in the `data/` folder. You do not need to modify the main application code to add new tools or guides.
 
-## 🛠 Adding Features Manually
-
-The data is now organized in the `data/` folder. You do not need to touch the UI code (`App.tsx`) to add new content.
-
-### 1. Adding a New Tool (Command Generator)
-Open `data/tools.ts`.
-Add a new object to the `TOOLS` array:
+### 1. Adding a New Tool
+Open `data/tools.ts` and add a new object to the `TOOLS` array.
 
 ```typescript
 import { createArg } from './tools';
 
 {
-    id: 'unique_id_here',
+    id: 'unique_tool_id',
     name: 'Tool Name',
-    category: 'WEB', // Must match a key in data/categories.ts
-    subcategory: 'Your Subcategory',
+    category: 'WEB', // Must match a category in data/categories.ts
+    subcategory: 'Enumeration',
     desc: 'Description of what the tool does.',
     authMode: 'none', // 'none' | 'optional' | 'required'
-    // Define your custom configuration toggles/inputs here
     args: [
         createArg.toggle('useHttps', 'Use HTTPS', true),
-        createArg.input('extraParam', 'Custom Flag', '', '--default')
+        createArg.input('target', 'Target IP/Domain', '', '--target')
     ],
     generate: (v, args) => {
-        // v = Global Inputs (v.target, v.domain, v.port, v.username, v.password)
-        // args = Your custom defined args (args.useHttps, args.extraParam)
-        
-        const proto = args.useHttps ? 'https://' : 'http://';
-        return `your-command ${proto}${v.target} ${args.extraParam}`;
+        // v = Global Inputs (v.target, v.domain, etc.)
+        // args = Your custom args defined above
+        return `tool-name ${args.target}`;
     }
 }
 ```
 
-### 2. Adding a New Guide (Walkthrough)
-Open `data/guides.ts`.
-Add to the `GUIDES` array:
+### 2. Adding a New Guide
+Open `data/guides.ts` and add to the `GUIDES` array.
 
 ```typescript
 {
-    id: 'guide_id',
-    name: 'Guide Tab Name',
+    id: 'guide_unique_id',
+    name: 'Guide Title',
     category: 'GUIDE',
-    subcategory: 'Section Name', // e.g., 'Mobile'
-    desc: 'Short description.',
-    content: `# Step 1: Do this
-command here
+    subcategory: 'Topic',
+    desc: 'Brief description.',
+    content: `# Step 1: Initial Scan
+nmap -sC -sV <target>
 
-# Step 2: Do that
-another command`
+# Step 2: Analysis
+Analyze the output...`
 }
 ```
-*Tip: Lines starting with `#` are highlighted as comments in yellow.*
 
-### 3. Adding External References
-Open `data/references.ts`.
-Add to the `REFERENCES` array:
+### 3. Adding References
+Open `data/references.ts` and add to the `REFERENCES` array.
 
 ```typescript
 {
-    id: 'ref_id',
-    name: 'Website Name',
+    id: 'ref_unique_id',
+    name: 'Resource Name',
     category: 'REF',
-    subcategory: 'Category Name',
-    desc: 'Short description of the resource.',
+    subcategory: 'Topic',
+    desc: 'Description of the resource.',
     url: 'https://example.com'
 }
 ```

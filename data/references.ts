@@ -64,5 +64,13 @@ export const REFERENCES: ReferenceItem[] = [
         subcategory: 'General',
         desc: 'A list of useful payloads and bypasses for Web Application Security.',
         url: 'https://swisskyrepo.github.io/PayloadsAllTheThings/'
+    },
+    {
+        id: 'cyberchef',
+        name: 'CyberChef',
+        category: 'REF',
+        subcategory: 'General',
+        desc: 'A web app for encryption, encoding, compression and data analysis.',
+        url: 'https://gchq.github.io/CyberChef/'
     }
 ];
