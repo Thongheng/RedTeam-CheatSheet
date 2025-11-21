@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
           background_color: '#FFF5F5',
           display: 'standalone',
           orientation: 'any',
-          scope: '/',
-          start_url: '/',
+          scope: '/RedToy/',
+          start_url: '/RedToy/',
           icons: [
             {
               src: 'pwa-192x192.png',
@@ -51,7 +51,7 @@ export default defineConfig(({ mode }) => {
     ],
     // This ensures your repository name is handled correctly if deployed to a subpath
     // Change '/your-repo-name/' to './' for relative paths or your actual repo name
-    base: './',
+    base: '/RedToy/',
     define: {
       // This allows 'process.env.API_KEY' to work in the client-side code
       'process.env.API_KEY': JSON.stringify(env.API_KEY)
