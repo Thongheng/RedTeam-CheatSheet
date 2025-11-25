@@ -2,9 +2,9 @@
 export interface GlobalInputs {
   target: string;
   domain: string;
-  port: string;
   username: string;
   password: string;
+  filepath: string;
 }
 
 export type ArgType = 'toggle' | 'text';

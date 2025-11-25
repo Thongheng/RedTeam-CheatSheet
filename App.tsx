@@ -4,7 +4,7 @@ import { CATEGORIES, TOOLS, REFERENCES, GUIDES, ENABLE_AI } from './constants';
 import { GlobalInputs, Theme, ToolArg } from './types';
 import { ThemeToggle } from './components/ThemeToggle';
 import { GeminiModal } from './components/GeminiModal';
-import { ChevronDown, ChevronRight, Copy, Check, Terminal as TerminalIcon, Search, Wand2, ExternalLink, BookOpen, Map, Settings as SettingsIcon, Menu, X, Bot, Home } from 'lucide-react';
+import { ChevronDown, ChevronRight, Copy, Check, Terminal as TerminalIcon, Search, Wand2, ExternalLink, BookOpen, Map as MapIcon, Settings as SettingsIcon, Menu, X, Bot, Home } from 'lucide-react';
 
 // Define the explicit order for the sidebar
 const CATEGORY_ORDER = ['SERVICE', 'WEB', 'WINDOWS', 'AD', 'OTHER', 'EXPLOIT', 'GUIDE', 'REF'];
@@ -31,9 +31,9 @@ const App: React.FC = () => {
         return saved ? JSON.parse(saved) : {
             target: '',
             domain: '',
-            port: '',
             username: '',
-            password: ''
+            password: '',
+            filepath: ''
         };
     });
 
@@ -299,9 +299,9 @@ const App: React.FC = () => {
                     {[
                         { label: 'TARGET', key: 'target', placeholder: '10.10.10.5' },
                         { label: 'DOMAIN', key: 'domain', placeholder: 'corp.local' },
-                        { label: 'PORT', key: 'port', placeholder: '445' },
                         { label: 'USER', key: 'username', placeholder: 'admin' },
                         { label: 'PASS', key: 'password', placeholder: 'pass123' },
+                        { label: 'FILE', key: 'filepath', placeholder: '/path/to/file' },
                     ].map((field) => (
                         <div key={field.key} className="flex flex-col">
                             <label className="text-[9px] lg:text-[10px] font-bold uppercase text-gray-500 dark:text-gray-400 mb-0.5 tracking-wider">{field.label}</label>
@@ -459,7 +459,7 @@ const App: React.FC = () => {
                         <>
                             {/* Breadcrumb */}
                             <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-mono animate-[fadeIn_0.2s_ease-out]">
-                                {isReferenceView ? <BookOpen size={16} /> : isGuideView ? <Map size={16} /> : <TerminalIcon size={16} />}
+                                {isReferenceView ? <BookOpen size={16} /> : isGuideView ? <MapIcon size={16} /> : <TerminalIcon size={16} />}
                                 <button onClick={handleLogoClick} className="hover:text-toy-red transition-colors hidden sm:inline">Home</button>
                                 <ChevronRight size={14} />
                                 <span className="hidden sm:inline">{CATEGORIES[selectedCategory]?.label}</span>
@@ -497,7 +497,8 @@ const App: React.FC = () => {
                                 <div className="flex flex-col h-full animate-[fadeIn_0.3s_ease-out]">
                                     {/* Guide Tabs */}
                                     <div className="flex flex-wrap gap-2 mb-6">
-                                        {GUIDES.filter(g => g.category === selectedCategory && g.subcategory === selectedSubcategory).map(guide => (
+                                        {/* Deduplicate guides to prevent ghost entries */}
+                                        {Array.from(new Map(GUIDES.filter(g => g.category === selectedCategory && g.subcategory === selectedSubcategory).map(g => [g.id, g])).values()).map(guide => (
                                             <button
                                                 key={guide.id}
                                                 onClick={() => setSelectedToolId(guide.id)}

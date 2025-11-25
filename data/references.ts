@@ -72,5 +72,21 @@ export const REFERENCES: ReferenceItem[] = [
         subcategory: 'General',
         desc: 'A web app for encryption, encoding, compression and data analysis.',
         url: 'https://gchq.github.io/CyberChef/'
+    },
+    {
+        id: 'revshell',
+        name: 'RevShell',
+        category: 'REF',
+        subcategory: 'General',
+        desc: 'Reverse Shell Generator',
+        url: 'https://www.revshells.com/'
+    },
+    {
+        id: 'cipher_identifier',
+        name: 'Cipher Identifier',
+        category: 'REF',
+        subcategory: 'General',
+        desc: 'Cipher Identifier is a web app for encryption, encoding, compression and data analysis.',
+        url: 'https://www.dcode.fr/cipher-identifier'
     }
 ];

