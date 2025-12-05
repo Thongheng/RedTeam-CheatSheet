@@ -407,13 +407,27 @@ nc -q 0 ${v.target || '$TARGET'} 8000 > ${v.filepath || '$FILEPATH'}`;
         name: 'WhatWeb',
         category: 'WEB',
         subcategory: 'Fingerprinting',
-        desc: 'Web scanner.',
+        desc: 'Web tech scanner.',
         authMode: 'none',
         args: [ARG_HTTPS],
         generate: (v, args) => {
             const prefix = getUrlPrefix(args.useHttps);
             const targetWithPort = formatTargetWithPort(v.target);
             return `whatweb ${prefix}${targetWithPort}`;
+        }
+    },
+    {
+        id: 'wappybird',
+        name: 'Wappybird',
+        category: 'WEB',
+        subcategory: 'Fingerprinting',
+        desc: 'Web tech scanner.',
+        authMode: 'none',
+        args: [ARG_HTTPS],
+        generate: (v, args) => {
+            const prefix = getUrlPrefix(args.useHttps);
+            const targetWithPort = formatTargetWithPort(v.target);
+            return `wappybird -u ${prefix}${targetWithPort}`;
         }
     },
     {
