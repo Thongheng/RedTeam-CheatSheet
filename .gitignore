@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# OS files
+Thumbs.db
+# .DS_Store already ignored above under editor files
+
+# Package manager locks
+# If using pnpm, keep pnpm-lock.yaml; ignore other locks to avoid cross-manager commits
+package-lock.json
+yarn.lock
+# pnpm-lock.yaml

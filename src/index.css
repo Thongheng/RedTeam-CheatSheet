@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+/* ============================================
+   HTB CYBERPUNK DESIGN SYSTEM
+   ============================================ */
+
+/* --- Custom Properties (CSS Variables) --- */
+:root {
+  /* HTB Color Palette */
+  --htb-bg-primary: #05080d;
+  --htb-bg-secondary: #0d1117;
+  --htb-bg-tertiary: #0b0e14;
+  --htb-accent: #a2ff00;
+  --htb-accent-hover: #b8ff4d;
+  --htb-text: #ffffff;
+  --htb-text-muted: #6b7280;
+  --htb-border: rgba(255, 255, 255, 0.05);
+  --htb-border-active: rgba(162, 255, 0, 0.3);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* --- Base Styles --- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--htb-bg-primary);
+  color: var(--htb-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Grid Background Pattern --- */
+.grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, #1a1f28 0.5px, transparent 0);
+  background-size: 60px 60px;
+}
+
+/* --- Typography --- */
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--htb-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #161b22;
+  border-radius: 20px;
+  border: 3px solid var(--htb-bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--htb-accent);
+}
+
+/* --- Selection --- */
+::selection {
+  background-color: var(--htb-accent);
+  color: #000000;
+}
+
+/* --- Focus States --- */
+*:focus-visible {
+  outline: 2px solid var(--htb-accent);
+  outline-offset: 2px;
+}
+
+/* --- HTB Component Utilities --- */
+
+/* Cards/Panels */
+.htb-card {
+  background-color: var(--htb-bg-secondary);
+  border: 1px solid var(--htb-border);
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.htb-card-hover:hover {
+  border-color: var(--htb-border-active);
+  box-shadow: 0 0 20px rgba(162, 255, 0, 0.1);
+}
+
+/* Buttons */
+.htb-btn-primary {
+  background-color: var(--htb-accent);
+  color: var(--htb-bg-primary);
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(162, 255, 0, 0.2);
+}
+
+.htb-btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 30px rgba(162, 255, 0, 0.3);
+  transform: scale(1.02);
+}
+
+.htb-btn-secondary {
+  background-color: transparent;
+  color: var(--htb-accent);
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--htb-accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.htb-btn-secondary:hover {
+  background-color: rgba(162, 255, 0, 0.1);
+}
+
+/* Inputs */
+.htb-input {
+  background-color: var(--htb-bg-secondary);
+  border: 1px solid var(--htb-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--htb-text);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.htb-input:focus {
+  outline: none;
+  border-color: var(--htb-accent);
+  box-shadow: 0 0 0 3px rgba(162, 255, 0, 0.1);
+}
+
+.htb-input::placeholder {
+  color: var(--htb-text-muted);
+}
+
+/* Terminal/Code Panel */
+.htb-terminal {
+  background-color: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.htb-terminal-header {
+  background-color: #1a1a1a;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.htb-terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.htb-terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.htb-terminal-dot--red {
+  background-color: #ff5f56;
+}
+
+.htb-terminal-dot--yellow {
+  background-color: #ffbd2e;
+}
+
+.htb-terminal-dot--green {
+  background-color: #27c93f;
+}
+
+.htb-terminal-content {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--htb-accent);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+/* Badge/Tag */
+.htb-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 9999px;
+  background-color: rgba(162, 255, 0, 0.1);
+  color: var(--htb-accent);
+  border: 1px solid rgba(162, 255, 0, 0.2);
+}
+
+/* Glow Effects */
+.htb-glow {
+  box-shadow: 0 0 20px rgba(162, 255, 0, 0.2);
+}
+
+.htb-glow-hover:hover {
+  box-shadow: 0 0 40px rgba(162, 255, 0, 0.4);
+}
+
+/* Text Glow */
+.htb-text-glow {
+  text-shadow: 0 0 20px rgba(162, 255, 0, 0.5);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(162, 255, 0, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(162, 255, 0, 0.4);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
