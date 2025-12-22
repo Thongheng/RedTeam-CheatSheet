@@ -89,8 +89,27 @@ body {
 
 /* --- Focus States --- */
 *:focus-visible {
-  outline: 2px solid var(--htb-accent);
+  outline: 1px solid var(--htb-accent);
   outline-offset: 2px;
+}
+
+/* Smooth focus for all inputs */
+input,
+textarea {
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: inherit;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* --- HTB Component Utilities --- */

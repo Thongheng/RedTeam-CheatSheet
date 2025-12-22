@@ -114,12 +114,12 @@ export default function SSTITool() {
                     <div className="flex-1">
                         <label className="text-xs font-medium text-gray-400 mb-1 block">Search Payloads</label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-2.5 text-gray-500" size={16} />
+                            <Search className="absolute left-1 top-2.5 text-gray-500" size={16} />
                             <Input
                                 placeholder="Search by engine, desc, or payload..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10"
+                                className="pl-7"
                             />
                         </div>
                     </div>

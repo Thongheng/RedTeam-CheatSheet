@@ -27,8 +27,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               w-full bg-[#0d1117] border border-white/10 rounded-lg 
               px-4 py-2.5 text-sm text-white font-mono
               placeholder:text-gray-600
-              focus:border-[#a2ff00]/50 focus:outline-none focus:ring-1 focus:ring-[#a2ff00]/20
-              transition-all duration-200
+              focus:border-white/50 focus:outline-none
+              transition-colors duration-200
               ${icon ? 'pl-10' : ''}
               ${error ? 'border-red-500/50' : ''}
               ${className}
@@ -64,8 +64,8 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
               w-full bg-[#0d1117] border border-white/10 rounded-lg 
               px-4 py-2.5 text-sm text-white font-mono
               placeholder:text-gray-600
-              focus:border-[#a2ff00]/50 focus:outline-none focus:ring-1 focus:ring-[#a2ff00]/20
-              transition-all duration-200 resize-y
+              focus:border-white/50 focus:outline-none
+              transition-colors duration-200 resize-y
               ${error ? 'border-red-500/50' : ''}
               ${className}
             `}
@@ -112,7 +112,7 @@ export const Select: React.FC<SelectProps> = ({
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-[#0d1117] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white font-mono cursor-pointer focus:border-[#a2ff00]/50 focus:outline-none focus:ring-1 focus:ring-[#a2ff00]/20 transition-all duration-200 appearance-none"
+                className="w-full bg-[#0d1117] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white font-mono cursor-pointer focus:border-white/50 focus:outline-none transition-colors duration-200 appearance-none"
                 style={{
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`,
                     backgroundPosition: 'right 0.5rem center',

@@ -113,7 +113,7 @@ function App() {
                                 placeholder="Search tools..."
                                 value={searchQuery}
                                 onChange={e => handleSearch(e.target.value)}
-                                className="bg-[#0d1117] border border-white/10 rounded-lg px-4 py-2 pl-10 text-sm w-48 lg:w-64 focus:border-[#a2ff00]/50 focus:outline-none transition-colors"
+                                className="bg-[#0d1117] border border-white/10 rounded-lg px-4 py-2 pl-10 text-sm w-48 lg:w-64 focus:border-white/50 focus:outline-none transition-colors"
                             />
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                             {searchQuery && (
