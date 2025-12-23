@@ -7,7 +7,9 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript">
 </p>
 
-**The all-in-one offensive security toolkit** — merged from [HackTools](https://github.com/LasCC/Hack-Tools) and [RedToy](https://github.com/...), featuring a dark, cyberpunk UI inspired by [Hack The Box](https://hackthebox.ai).
+**The all-in-one offensive security toolkit** featuring a dark, cyberpunk UI inspired by [hacktools.sh](https://hacktools.sh/).
+
+https://hack-toy.vercel.app/
 
 ## ✨ Features
 
@@ -126,6 +128,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## 🙏 Credits
 
-- [HackTools](https://github.com/LasCC/Hack-Tools) — Original browser extension
-- [RedToy](https://github.com/...) — Data-driven tool framework
-- [Hack The Box](https://hackthebox.com) — UI/UX inspiration
+- [hacktools.sh](https://hacktools.sh/) — UI/UX inspiration and design reference
