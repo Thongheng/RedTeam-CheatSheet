@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:extension": "tsc -b && vite build --mode extension",
+    "build:extension:chrome": "npm run build:extension && cp public/manifest.json dist/",
+    "build:extension:firefox": "npm run build:extension && cp public/manifest-firefox.json dist/manifest.json",
+    "package:chrome": "npm run build:extension:chrome && cd dist && zip -r ../hacktoy-chrome.zip .",
+    "package:firefox": "npm run build:extension:firefox && cd dist && zip -r ../hacktoy-firefox.zip .",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest"

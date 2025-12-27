@@ -44,82 +44,57 @@ function App() {
             <div className="relative z-10 flex flex-col min-h-screen">
                 {/* Navbar */}
                 <nav className="sticky top-0 z-50 bg-[#05080d]/95 backdrop-blur-md border-b border-white/5">
-                    <div className="w-full px-6 py-3 flex items-center justify-between">
+                    <div className="w-full px-4 py-1.5 flex items-center justify-between">
                         {/* Logo - Left */}
-                        <div className="flex items-center gap-3 cursor-pointer flex-shrink-0" onClick={() => { navigate('/'); clearSearch(); }}>
-                            <div className="w-9 h-9 rounded-lg bg-[#a2ff00]/10 border border-[#a2ff00]/30 flex items-center justify-center">
-                                <svg className="w-5 h-5 text-[#a2ff00]" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                                </svg>
+                        <div className="flex items-center gap-1.5 cursor-pointer flex-shrink-0" onClick={() => { navigate('/'); clearSearch(); }}>
+                            <div className="w-7 h-7 rounded-lg bg-[#a2ff00]/10 border border-[#a2ff00]/30 flex items-center justify-center">
+                                <span className="text-[#a2ff00] font-black text-xs">&gt;</span>
                             </div>
-                            <span className="text-lg font-black tracking-tighter hidden sm:block">HackToy</span>
+                            <span className="text-white font-black text-base tracking-tight">HackToy</span>
                         </div>
 
-                        {/* Center Navigation */}
-                        <div className="flex items-center gap-1 mx-4">
+                        {/* Category Navigation */}
+                        <div className="flex items-center gap-0.5">
+                            <button onClick={() => navigate('/tools/WEB/xss_payloads')} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname.includes('/tools/WEB') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>Web</button>
+                            <button onClick={() => navigate('/tools/WINDOWS/powershell_commands')} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname.includes('/tools/WINDOWS') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>Win</button>
+                            <button onClick={() => navigate('/tools/LINUX/linux_enumeration')} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname.includes('/tools/LINUX') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>Linux</button>
+                            <button onClick={() => navigate('/tools/MOBILE/adb_commands')} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname.includes('/tools/MOBILE') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>Mobile</button>
+                            <button onClick={() => navigate('/tools/UTILITIES/cve_research')} className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname.includes('/tools/UTILITIES') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>Utils</button>
+                            <div className="w-px h-4 bg-white/10 mx-1"></div>
                             <button
-                                onClick={() => navigate('/tools/WEB/xss_payloads')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname.includes('/tools/WEB') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                            >
-                                Web
-                            </button>
-                            <button
-                                onClick={() => navigate('/tools/WINDOWS/powershell_commands')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname.includes('/tools/WINDOWS') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                            >
-                                Windows
-                            </button>
-                            <button
-                                onClick={() => navigate('/tools/LINUX/linux_enumeration')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname.includes('/tools/LINUX') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                            >
-                                Linux
-                            </button>
-                            <button
-                                onClick={() => navigate('/tools/MOBILE/adb_commands')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname.includes('/tools/MOBILE') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                            >
-                                Mobile
-                            </button>
-                            <button
-                                onClick={() => navigate('/tools/UTILITIES/cve_research')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname.includes('/tools/UTILITIES') ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                            >
-                                Utilities
-                            </button>
-
-                            {/* Separator */}
-                            <div className="w-px h-5 bg-white/10 mx-2"></div>
-
-                            {/* Guides & References */}
-                            <button
-                                onClick={() => navigate('/guides')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname === '/guides' ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                                onClick={() => { navigate('/guides'); clearSearch(); }}
+                                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname === '/guides'
+                                    ? 'bg-[#a2ff00]/10 text-[#a2ff00]'
+                                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                    }`}
                             >
                                 Guides
                             </button>
                             <button
-                                onClick={() => navigate('/references')}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${location.pathname === '/references' ? 'bg-[#a2ff00]/10 text-[#a2ff00]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                                onClick={() => { navigate('/references'); clearSearch(); }}
+                                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${location.pathname === '/references'
+                                    ? 'bg-[#a2ff00]/10 text-[#a2ff00]'
+                                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                                    }`}
                             >
-                                References
+                                Refs
                             </button>
                         </div>
 
                         {/* Search - Right */}
-                        <div className="relative flex-shrink-0">
+                        <div className="relative group flex-shrink-0">
+                            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-[#a2ff00] transition-colors pointer-events-none" size={14} />
                             <input
                                 type="text"
-                                placeholder="Search tools..."
+                                placeholder="Search..."
                                 value={searchQuery}
-                                onChange={e => handleSearch(e.target.value)}
-                                className="bg-[#0d1117] border border-white/10 rounded-lg px-4 py-2 pl-10 text-sm w-48 lg:w-64 focus:border-white/50 focus:outline-none transition-colors"
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="w-32 bg-white/5 border border-white/10 rounded pl-7 pr-2 py-1 text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-[#a2ff00]/50 focus:bg-white/10 transition-all"
                             />
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                             {searchQuery && (
                                 <button
                                     onClick={clearSearch}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white cursor-pointer"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white cursor-pointer"
                                 >
                                     ×
                                 </button>

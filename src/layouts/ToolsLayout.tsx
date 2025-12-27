@@ -88,10 +88,10 @@ export default function ToolsLayout({ globalInputs, searchQuery, clearSearch }: 
     };
 
     return (
-        <div className="flex h-[calc(100vh-65px)]">
-            {/* Sidebar */}
-            <aside className="w-64 bg-[#0d1117]/50 border-r border-white/5 overflow-y-auto hidden lg:block">
-                <div className="p-4">
+        <div className="flex h-screen overflow-hidden">
+            {/* Sidebar - made narrower for extension */}
+            <aside className="w-48 border-r border-white/5 bg-[#05080d] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent flex-shrink-0">
+                <div className="p-3">
                     {searchQuery && (
                         <div className="mb-4 p-3 rounded-lg bg-[#a2ff00]/10 border border-[#a2ff00]/20">
                             <div className="text-xs text-[#a2ff00] font-bold mb-1">Search Results</div>

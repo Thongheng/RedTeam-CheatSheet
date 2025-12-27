@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "HackToy - Security Testing Tools",
+    "version": "1.0.0",
+    "description": "Penetration testing toolkit with reverse shells, payloads, encoders, and security testing utilities",
+    "permissions": [
+        "clipboardWrite",
+        "storage"
+    ],
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": {
+            "16": "icon-16.png",
+            "48": "icon-48.png",
+            "128": "icon-128.png"
+        }
+    },
+    "icons": {
+        "16": "icon-16.png",
+        "48": "icon-48.png",
+        "128": "icon-128.png"
+    },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+    }
+}
