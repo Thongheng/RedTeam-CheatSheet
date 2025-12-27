@@ -1,7 +1,6 @@
+import type { ToolArg } from '../types';
 
-import type { ToolArg } from '../../types';
-
-// --- Helpers ---
+// --- URL and Target Helpers ---
 
 export const getUrlPrefix = (isHttps: boolean) => isHttps ? 'https://' : 'http://';
 

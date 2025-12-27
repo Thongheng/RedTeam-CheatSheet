@@ -1,7 +1,12 @@
-import type { Tool } from '../../../types';
 import React from 'react';
+import type { Tool } from '../../../types';
+
+// ====================================================================
+// WINDOWS TOOLS - Consolidated
+// ====================================================================
 
 export const WINDOWS_TOOLS: Tool[] = [
+    // --- Enumeration ---
     {
         id: 'powershell_commands',
         name: 'PowerShell Commands',
@@ -11,8 +16,21 @@ export const WINDOWS_TOOLS: Tool[] = [
         authMode: 'none',
         generate: () => '',
         source: 'hacktools',
-        component: React.lazy(() => import('../../../components/tools/PowerShellTool')),
+        component: React.lazy(() => import('../components/PowerShellTool')),
     },
+    {
+        id: 'windows_host_enum',
+        name: 'Host Enumeration',
+        category: 'WINDOWS',
+        subcategory: 'Enumeration',
+        desc: 'Windows host enumeration commands',
+        authMode: 'none',
+        generate: () => '',
+        source: 'hacktools',
+        component: React.lazy(() => import('../components/WindowsHostEnumTool')),
+    },
+
+    // --- Exfiltration ---
     {
         id: 'file_transfer',
         name: 'File Transfer',
@@ -22,8 +40,10 @@ export const WINDOWS_TOOLS: Tool[] = [
         authMode: 'none',
         generate: () => '',
         source: 'hacktools',
-        component: React.lazy(() => import('../../../components/tools/FileTransferTool')),
+        component: React.lazy(() => import('../components/FileTransferTool')),
     },
+
+    // --- Evasion ---
     {
         id: 'obfuscation_tool',
         name: 'Obfuscation',
@@ -33,6 +53,6 @@ export const WINDOWS_TOOLS: Tool[] = [
         authMode: 'none',
         generate: () => '',
         source: 'hacktools',
-        component: React.lazy(() => import('../../../components/tools/ObfuscationTool')),
+        component: React.lazy(() => import('../components/ObfuscationTool')),
     },
 ];

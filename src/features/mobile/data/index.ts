@@ -1,7 +1,12 @@
-import type { Tool } from '../../../types';
 import React from 'react';
+import type { Tool } from '../../../types';
+
+// ====================================================================
+// MOBILE TOOLS - Consolidated
+// ====================================================================
 
 export const MOBILE_TOOLS: Tool[] = [
+    // --- Android ---
     {
         id: 'adb_commands',
         name: 'ADB Commands',
@@ -11,7 +16,7 @@ export const MOBILE_TOOLS: Tool[] = [
         authMode: 'none',
         generate: () => '',
         source: 'hacktools',
-        component: React.lazy(() => import('../../../components/tools/ADBTool')),
+        component: React.lazy(() => import('../components/ADBTool')),
     },
     {
         id: 'mobile_hooking',
@@ -22,6 +27,6 @@ export const MOBILE_TOOLS: Tool[] = [
         authMode: 'none',
         generate: () => '',
         source: 'hacktools',
-        component: React.lazy(() => import('../../../components/tools/MobileHookingTool')),
+        component: React.lazy(() => import('../components/MobileHookingTool')),
     },
 ];

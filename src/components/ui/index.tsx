@@ -231,6 +231,7 @@ export const Card: React.FC<CardProps> = ({ children, className = '', hover = fa
 
 
 import { Tabs, TabNav } from './Tabs';
+export { Toast } from './Toast';
 
 export { Tabs, TabNav };
 export default { Input, TextArea, Select, Tag, Button, Dropdown, Card, Tabs, TabNav };
